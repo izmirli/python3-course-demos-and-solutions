@@ -209,9 +209,10 @@ class AIPlayer(Player):
 
 
 def make_players_and_insert_to_queue():
-    """
-    Makes a HumanPlayer and an AIPlayer.
-    Insert players into the global players_queue (a deque).
+    """Make human and AI Playeres, and insert them to the global players_queue.
+
+    Prompt human player for its name and use it in its object creation.
+
     :return: None
     """
     human_player_name = input('What is your name human player? ')
@@ -220,10 +221,11 @@ def make_players_and_insert_to_queue():
 
 
 def randomly_order_players():
-    """
+    """Players are randomly ordered in the global players_queue (a deque).
+
     1st player in queue will be the X shape and will start the game.
     2nd player will get the O shape and play next.
-    Players are randomly ordered into the global players_queue (a deque).
+
     :return: None
     """
     if random.random() > 0.5:  # 50% to change existing order.
@@ -233,6 +235,14 @@ def randomly_order_players():
 
 
 def get_and_make_player_next_move(player):
+    """Get next move of given player, and make in on the game board.
+
+    Ready to handle some exceptions by giving an error message and
+    asking again for player next move.
+
+    :param player: a Player object (with next_move function)
+    :return: None
+    """
     while True:
         print(f"{player.name}, what's your next move?")
         try:
