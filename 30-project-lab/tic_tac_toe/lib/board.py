@@ -56,15 +56,14 @@ class Board:
         return False
 
     def board_to_list(self):
-        """A conversion utility from a 2D matrix (list of lists) to a 1D vector list.
+        """Conversion utility from 2D matrix (list of lists) to 1D vector list.
 
+        Convert the game's 2D board to a 1D representation, with blank squares swiped with their indexes.
+        Example, this board [['X', 'O', 'X'], [' ', 'X', ' '], ['O', ' ', 'O']]
+        will be returned as ['X', 'O', 'X', 3, 'X', 5, 'O', 7, 'O']
         :return: list representing the board with 9 indexes.
         """
-        board_list = []
-        for y in range(len(self.board)):
-            for x in range(len(self.board[y])):
-                board_list.append(len(board_list) if 'X' != self.board[y][x] and 'O' != self.board[y][x] else self.board[y][x])
-        return board_list
+        return [self.board[y][x] if self.board[y][x] != ' ' else y*3+x for y in range(3) for x in range(3)]
 
     @staticmethod
     def list_index_to_board_coordinates(index):
