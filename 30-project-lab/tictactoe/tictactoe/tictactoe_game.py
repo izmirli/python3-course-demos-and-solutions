@@ -8,6 +8,7 @@ new game will start.
 Overall scoreboard will be displayed at the end of each game.
 """
 
+import os
 import random
 from collections import deque
 from time import sleep
@@ -19,19 +20,23 @@ from ai_player import AIPlayer
 class TictactoeGame:
 
     def __init__(self):
-        self.bord = Board()
+        self.board = Board()
         self.players_queue = deque()
         self.games_count = 0
+        self.clear_before_each_move = False
 
     def run_game(self):
         print('Welcome to the Tic-Tac-Toe game.')
         self.make_players_and_insert_to_queue()
+        self.clear_before_each_move = True if 'y' == input('Clear screen before each move (N/y)?').casefold() else False
         while True:
+            if self.clear_before_each_move:
+                _ = os.system('clear' if 'posix' == os.name else 'cls')
             self.games_count += 1
             self.randomly_order_players()
             self.play_single_game()
-            again = input('Do you want to plat again? ')
-            if 'yes' != again.casefold():
+            again = input('Do you want to play again? ').casefold()
+            if 'yes' != again and 'y' != again:
                 break
         self.display_scoreboard()
 
@@ -50,9 +55,9 @@ class TictactoeGame:
                 print('Valid options are: 1 for Player Vs. AI or 2 for player Vs. Player.')
         for n in range(int(number_of_human_players)):
             human_player_name = input(f'What is your name player {n+1}? ')
-            self.players_queue.append(HumanPlayer(human_player_name))
+            self.players_queue.append(HumanPlayer(self.board, human_player_name))
         if len(self.players_queue) == 1:
-            self.players_queue.append(AIPlayer())
+            self.players_queue.append(AIPlayer(self.board))
 
     def randomly_order_players(self):
         """Players are randomly ordered in the global players_queue (a deque).
@@ -84,7 +89,7 @@ class TictactoeGame:
                 print('Invalid move format. Use: column,row (0,0 is top left; 2,2 is bottom right).')
                 continue
             try:
-                self.bord.move(int(x), int(y), player.shape)
+                self.board.move(int(x), int(y), player.shape)
             except UserWarning as e:
                 print(f'Invalid move: {e}')
                 continue
@@ -102,25 +107,26 @@ class TictactoeGame:
 
         :return: None
         """
-        print(f"""
-Game number: {self.games_count}
+        print(f"""Game number: {self.games_count}
 {self.players_queue[0].name} will start, playing '{self.players_queue[0].shape}'.
 {self.players_queue[1].name} will play next with '{self.players_queue[1].shape}'.
 Each turn type the square position for your next move as: column,row (0,0 is top left; 2,2 is bottom right)
 """)
-        self.bord.clear()
-        self.bord.display()
+        self.board.clear()
+        self.board.display()
         sleep(2)
         while True:
             next_player = self.players_queue.popleft()
             self.get_and_make_player_next_move(next_player)
             self.players_queue.append(next_player)
-            self.bord.display()
-            if self.bord.winning(next_player.shape):
+            if self.clear_before_each_move:
+                _ = os.system('clear' if 'posix' == os.name else 'cls')
+            self.board.display()
+            if self.board.winning(next_player.shape):
                 next_player.wins += 1
                 print(f'{next_player.name} wins the game.')
                 return None
-            if not self.bord.has_more_moves():
+            if not self.board.has_more_moves():
                 print(f'No more moves. Game ended with no winner.')
                 return None
             sleep(1)

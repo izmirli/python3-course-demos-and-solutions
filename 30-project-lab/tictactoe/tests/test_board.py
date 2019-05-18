@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import io
-from lib.board import Board
+from tictactoe.board import Board
 
 
 class TestBoard(unittest.TestCase):
@@ -73,8 +73,9 @@ class TestBoard(unittest.TestCase):
     def test_list_index_to_board_coordinates(self):
         cases = {0: (0, 0), 1: (1, 0), 2: (2, 0), 3: (0, 1), 4: (1, 1), 5: (2, 1), 6: (0, 2), 7: (1, 2), 8: (2, 2)}
         for index, coordinates in cases.items():
-            x, y = self.b.list_index_to_board_coordinates(index)
-            self.assertTupleEqual((x, y), coordinates)
+            with self.subTest(index=index):
+                x, y = self.b.list_index_to_board_coordinates(index)
+                self.assertTupleEqual((x, y), coordinates)
 
     def test_winning(self):
         self.b.clear()

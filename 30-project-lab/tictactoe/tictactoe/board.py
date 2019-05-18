@@ -1,3 +1,6 @@
+from tictactoe_exceptions import InvalidShapeWarning, InvalidMoveWarning
+
+
 class Board:
     """Tic-Tac-Toe game board."""
     shapes = ('X', 'O')  # Allowed shapes
@@ -38,9 +41,9 @@ class Board:
         :return: None
         """
         if shape not in Board.shapes:
-            raise UserWarning(f"Given shape '{shape}' is not a valid shape.")
+            raise InvalidShapeWarning(shape)
         if ' ' != self.board[y][x]:
-            raise UserWarning(f'Square {x},{y} is not empty.')
+            raise InvalidMoveWarning(x, y)
         self.board[y][x] = shape
 
     def has_more_moves(self):
